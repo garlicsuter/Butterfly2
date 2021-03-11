@@ -41,6 +41,14 @@ public class Butterfly : MonoBehaviour
             SceneManager.LoadScene(currentLevel);
             //Reset
         }
+
+        if (collision.gameObject.tag == "win")
+        {
+
+            Debug.Log("hit win");
+            SceneManager.LoadScene(currentLevel + 1);
+           
+        }
     }
 
     void Fly()
