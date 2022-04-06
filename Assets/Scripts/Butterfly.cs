@@ -10,12 +10,17 @@ public class Butterfly : MonoBehaviour
     public float rotateSpeed = 2.0f;
     bool isAlive = true;
     int currentLevel;
+    public ParticleSystem dustFX;
+    public GameObject explodeFX;
+    AudioSource myAudio;
+    public AudioClip explodeSound;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         currentLevel = SceneManager.GetActiveScene().buildIndex;
+        myAudio = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -36,10 +41,14 @@ public class Butterfly : MonoBehaviour
     {
         if(collision.gameObject.tag == "bad")
         {
+            //Explosion
+            Instantiate(explodeFX, transform.position, transform.rotation);
+            myAudio.PlayOneShot(explodeSound);
             //Die
             isAlive = false;
-            SceneManager.LoadScene(currentLevel);
+            
             //Reset
+            Invoke("ResetScene", 2f); 
         }
 
         if (collision.gameObject.tag == "win")
@@ -57,6 +66,12 @@ public class Butterfly : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             rb.AddRelativeForce(Vector3.up * flySpeed);
+            dustFX.Play();
+        }
+
+        else
+        {
+            dustFX.Play();
         }
     }
 
@@ -66,5 +81,10 @@ public class Butterfly : MonoBehaviour
         float inputAxis = Input.GetAxis("Horizontal");
         transform.Rotate(Vector3.back * inputAxis * rotateSpeed);
         rb.freezeRotation = false;
+    }
+
+    private void ResetScene()
+    {
+        SceneManager.LoadScene(currentLevel);
     }
 }
